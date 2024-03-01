@@ -1,0 +1,46 @@
+SampleFileName: cyber_data.csv
+LengthOfFileName: 10
+NumberOfColumns: 43
+Column:
+  duration: INTEGER
+  protocol_type: OBJECT
+  service: OBJECT
+  flag: OBJECT
+  src_bytes: INTEGER
+  dst_bytes: INTEGER
+  land: INTEGER
+  wrong_fragment: INTEGER
+  urgent: INTEGER
+  hot: INTEGER
+  num_failed_logins: INTEGER
+  logged_in: INTEGER
+  num_compromised: INTEGER
+  root_shell: INTEGER
+  su_attempted: INTEGER
+  num_root: INTEGER
+  num_file_creations: INTEGER
+  num_shells: INTEGER
+  num_access_files: INTEGER
+  num_outbound_cmds: INTEGER
+  is_host_login: INTEGER
+  is_guest_login: INTEGER
+  count: INTEGER
+  srv_count: INTEGER
+  serror_rate: INTEGER
+  srv_serror_rate: INTEGER
+  rerror_rate: INTEGER
+  srv_rerror_rate: INTEGER
+  same_srv_rate: INTEGER
+  diff_srv_rate: INTEGER
+  srv_diff_host_rate: INTEGER
+  dst_host_count: INTEGER
+  dst_host_srv_count: INTEGER
+  dst_host_same_srv_rate: INTEGER
+  dst_host_diff_srv_rate: INTEGER
+  dst_host_same_src_port_rate: INTEGER
+  dst_host_srv_diff_host_rate: INTEGER
+  dst_host_serror_rate: INTEGER
+  dst_host_srv_serror_rate: INTEGER
+  dst_host_rerror_rate: INTEGER
+  dst_host_srv_rerror_rate: INTEGER
+  target: OBJECT
