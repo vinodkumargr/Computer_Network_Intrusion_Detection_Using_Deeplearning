@@ -3,10 +3,11 @@ import sys
 import json
 import numpy as np
 import mlflow
-import mlflow.tensorflow
+import mlflow.keras
 from typing import Dict
 from tensorflow import keras
 from tensorflow.keras.callbacks import EarlyStopping
+from mlflow.models.signature import infer_signature
 
 from network.utils import main_utils
 from config.config import params
@@ -58,7 +59,7 @@ class ModelTrainer:
         
         # Start a new MLflow run
         mlflow.start_run()
-        mlflow.tensorflow.autolog()  # Enable MLflow autologging for TensorFlow
+        mlflow.keras.autolog()  # Enable MLflow autologging for TensorFlow
 
         logging.info("Train your model and log metrics")
 
@@ -72,6 +73,7 @@ class ModelTrainer:
             "validation_loss": history.history['val_loss'][-1],
             "validation_accuracy": history.history['val_accuracy'][-1],
         })
+        return self.model
 
 
     def initiate_model_trainer(self) -> ModelTrainerArtifact:
@@ -94,18 +96,30 @@ class ModelTrainer:
                 test_arr[:, :-1],
                 test_arr[:, -1],
                 valid_arr[:, :-1],
-                valid_arr[:, -1]
+                valid_arr[:, -1],
             )
 
             logging.info(f"train : {x_train.shape}, test: {x_test.shape} , valid : {x_valid.shape}")
 
             input_dim=x_train.shape[1]
             # Train your model and log with MLflow
-            self.train_model(x_train, y_train, x_test, y_test, input_dim=input_dim)
-            
+            best_model = self.train_model(x_train, y_train, x_test, y_test, input_dim=input_dim)
+
+            y_pred = best_model.predict(x_test)
+            signature = infer_signature(x_train, y_pred)
+
             best_model_path = self.model_trainer_config.trained_model_file_path
+            # Save the trained model as an artifact
+            mlflow.keras.log_model(best_model, "Network-Model", signature=signature)
+
+            # Log the transformed data as artifacts
+            mlflow.log_artifact(self.data_transformation_artifact.transformed_train_file_path, "transformed_data/train")
+            mlflow.log_artifact(self.data_transformation_artifact.transformed_test_file_path, "transformed_data/test")
+            mlflow.log_artifact(self.data_transformation_artifact.transformed_valid_file_path, "transformed_data/valid")
+
             
-            main_utils.save_object(file_path=best_model_path, obj=self.model)
+            
+            main_utils.save_object(file_path=best_model_path, obj=best_model)
 
 
             model_trainer_artifact: ModelTrainerArtifact = ModelTrainerArtifact(
@@ -127,3 +141,4 @@ class ModelTrainer:
 
 
 #export MLFLOW_TRACKING_URI="http://your.mlflow.url:5000"
+# mlflow server --backend-store-uri sqlite:///mlruns.db --host 0.0.0.0 -p 8000

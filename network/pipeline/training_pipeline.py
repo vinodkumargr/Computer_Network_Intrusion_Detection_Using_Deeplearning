@@ -5,13 +5,16 @@ from network.components.data_ingestion import DataIngestion
 from network.components.data_validation import DataValidation
 from network.components.data_transformation import DataTransformation
 from network.components.model_trainer import ModelTrainer
+from network.components.model_evaluation import ModelEvaluationandPusher
+
 
 
 from network.entity.artifact_entity import (
     DataIngestionArtifact,
     DataValidationArtifact,
     DataTransformationArtifact,
-    ModelTrainerArtifact
+    ModelTrainerArtifact,
+    ModelEvaluationandPusherArtifact
 )
 
 from network.entity.config_entity import (
@@ -19,7 +22,8 @@ from network.entity.config_entity import (
     DataIngestionConfig,
     DataValidationConfig,
     DataTransformationConfig,
-    ModelTrainerConfig
+    ModelTrainerConfig,
+    ModelEvaluationandPusherConfig
 )
 
 from network.exception import NetworkException
@@ -130,6 +134,33 @@ class TrainingPipeline:
             raise NetworkException(e, sys)
         
 
+    def start_model_evaluation_and_pusher(
+        self,
+        model_trainer_artifact: ModelTrainerArtifact,
+        data_transformation_artifact: DataTransformationArtifact
+    ) -> ModelEvaluationandPusherArtifact:
+        try:
+            self.model_evaluation_and_pusher_config: ModelEvaluationandPusherConfig= (
+                ModelEvaluationandPusherConfig(
+                    training_pipeline_config=self.training_pipeline_config
+                )
+            )
+
+            model_evaluation_and_pusher_config = ModelEvaluationandPusher(
+                model_evaluation_and_pusher_config=self.model_evaluation_and_pusher_config,
+                data_transformation_artifact= data_transformation_artifact,
+                model_trainer_artifact=model_trainer_artifact,
+            )
+
+            model_evaluation_and_pusher_artifact: ModelEvaluationandPusherConfig= (
+                model_evaluation_and_pusher_config.initiate_model_evaluation_and_pusher()
+            )
+
+            return model_evaluation_and_pusher_artifact
+        
+        except Exception as e:
+            raise NetworkException(e, sys)
+
 
 
     def run_pipeline(self):
@@ -141,6 +172,11 @@ class TrainingPipeline:
             )
             model_trainer_artifact: ModelTrainerArtifact = self.start_model_trainer(
                     data_transformation_artifact= data_transformation_artifact
+            )
+
+            model_evaluation_and_pusher_artifact: ModelEvaluationandPusher =self.start_model_evaluation_and_pusher(
+                data_transformation_artifact=data_transformation_artifact,
+                model_trainer_artifact=model_trainer_artifact,
             )
             return model_trainer_artifact
         

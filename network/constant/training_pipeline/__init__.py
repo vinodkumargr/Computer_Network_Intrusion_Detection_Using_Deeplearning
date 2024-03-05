@@ -61,5 +61,15 @@ DATA_TRANSFORMATION_VALID_FILE_PATH: str = "valid.npy"
 MODEL_TRAINER_DIR_NAME: str = "model_trainer"
 MODEL_TRAINER_TRAINED_MODEL_DIR: str = "trained_model"
 MODEL_FILE_NAME: str = "model.dill"
-MODEL_TRAINER_EXPECTED_SCORE: float = 0.6
+MODEL_TRAINER_EXPECTED_SCORE: float = 0.7
 MODEL_TRAINER_MODEL_METRIC_KEY: str = "confusion_matrix"
+
+
+"""Constants for Model evaluation and pusher
+"""
+MODEL_PUSHER_ARTIFACTS_DIR_NAME:str = "model_pusher"
+ARTIFACTS_FINAL_MODEL_OBJECT:str = "artifacts_evaluated_model.dill"
+ARTIFACTS_TRANSFORMED_OBJECT_FILE:str = "artifacts_pre-processor_object.dill"
+MODEL_REGISTRY_DIR_NAME:str = "saved_models"
+MODEL_REGISRTY_MODEL_FILE = "final_model.dill"
+MODEL_REGISRTY_TRNAFORMED_OBJECT_FILE:str = "final_transformer.dill"

@@ -28,15 +28,11 @@ class ModelTrainerArtifact:
     best_model_path: str
 
 
-# @dataclass
-# class ModelEvaluationArtifact:
-#     is_model_accepted: bool
+@dataclass
+class ModelEvaluationandPusherArtifact:
+    model_registry_final_model_path: str
+    model_registry_transformed_object_path: str
 
-#     trained_model_info: MLFlowModelInfo
-
-#     accepted_model_info: MLFlowModelInfo
-
-#     prod_model_info: MLFlowModelInfo
 
 
 # @dataclass

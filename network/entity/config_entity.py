@@ -151,59 +151,50 @@ class ModelTrainerConfig:
         )
 
 
-class ModelEvaluationConfig:
-    def __init__(self):
-        self.min_absolute_change: float = (
-            training_pipeline.MODEL_EVALUATION_CHANGED_THRESHOLD_SCORE
+class ModelEvaluationandPusherConfig:
+    def __init__(self, training_pipeline_config:TrainingPipelineConfig):
+        self.best_model_evaluation_and_pusher_dir = os.path.join(
+            training_pipeline_config.artifact_dir,
+            training_pipeline.MODEL_PUSHER_ARTIFACTS_DIR_NAME
+        )
+        self.artifact_best_model_path = os.path.join(
+            self.best_model_evaluation_and_pusher_dir,
+            training_pipeline.ARTIFACTS_FINAL_MODEL_OBJECT
         )
 
-        self.model_eval_threshold: float = training_pipeline.MODEL_EVALUATION_THRESHOLD
-
-        self.higher_is_better: bool = True
-
-        self.model_type: str = training_pipeline.MODEL_EVALUATION_MODEL_TYPE
-
-
-class ModelPusherConfig:
-    def __init__(self):
-        self.production_model_stage: str = (
-            training_pipeline.MODEL_PUSHER_PROD_MODEL_STAGE
+        self.artifact_transformed_object_file_path = os.path.join(
+            self.best_model_evaluation_and_pusher_dir,
+            training_pipeline.ARTIFACTS_TRANSFORMED_OBJECT_FILETRANSFORMED_OBJECT_FILE
         )
 
-        self.staging_model_stage: str = training_pipeline.MODEL_PUSHER_STAG_MODEL_STAGE
+        #Model registry
+        self.model_registry = training_pipeline.MODEL_REGISTRY_DIR_NAME
+        os.mkdirs(self.model_registry, exist_ok=True)
 
-        self.archive_existing_versions: bool = (
-            training_pipeline.MODEL_PUSHER_ARCHIVE_EXISTING_VERSIONS
+        self.model_registry_model_path = os.path.join(
+            self.model_registry,
+            training_pipeline.MODEL_REGISRTY_MODEL_FILE
         )
 
-        self.bento_model_name: str = training_pipeline.MODEL_PUSHER_BENTOML_MODEL_NAME
-
-        self.bento_model_service_name: str = (
-            training_pipeline.MODEL_PUSHER_BENTOML_SERVICE_NAME
+        self.model_registry_transformed_object_path = os.path.join(
+            self.model_registry,
+            training_pipeline.MODEL_REGISRTY_TRNAFORMED_OBJECT_FILE
         )
 
-        self.bento_model_image_name: str = (
-            training_pipeline.MODEL_PUSHER_BENTOML_MODEL_IMAGE
-        )
+
+
 
 
 @dataclass
 class MLFlowModelInfo:
     model_name: str
 
-    model_current_stage: str
-
     model_uri: str
-
-    model_version: str
 
 
 @dataclass
 class EvaluateModelResponse:
     is_model_accepted: bool
 
-    trained_model_info: MLFlowModelInfo
-
     accepted_model_info: MLFlowModelInfo
 
-    prod_model_info: MLFlowModelInfo
